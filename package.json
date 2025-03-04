@@ -32,6 +32,6 @@
   "lint-staged": {
     "*.{js,ts,jsx,tsx}": "eslint --cache --fix",
     "*.{tsx,ts}": "tsc --noEmit --jsx react-jsx",
-    "*.{js,css,md}": "prettier --write"
+    "*.{js,ts,tsx,css,md}": "prettier --write"
   }
 }
