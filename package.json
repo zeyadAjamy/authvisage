@@ -47,11 +47,12 @@
     "prettier": "^3.5.3",
     "prettier-plugin-tailwindcss": "^0.6.11",
     "tailwindcss": "^4",
+    "tsc-files": "^1.1.4",
     "typescript": "^5"
   },
   "lint-staged": {
     "*.{js,ts,jsx,tsx}": "eslint --cache --fix",
-    "*.{tsx,ts}": "tsc --noEmit --jsx react-jsx",
+    "*.{tsx,ts}": "tsc-files --noEmit --jsx react-jsx",
     "*.{js,ts,tsx,css,md}": "prettier --write"
   }
 }
