@@ -4,6 +4,8 @@ import { ReactQueryProviders } from "@/contexts/react-query";
 import { UserProvider } from "@/contexts/user";
 import type { Metadata } from "next";
 import "./globals.css";
+import { Suspense } from "react";
+import { LoadingPage } from "@/components/loading-page";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -30,22 +32,24 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <ReactQueryProviders>
-          <UserProvider>{children}</UserProvider>
-        </ReactQueryProviders>
-        <ToastContainer
-          position="top-right"
-          autoClose={5000}
-          hideProgressBar={false}
-          newestOnTop={false}
-          closeOnClick={false}
-          rtl={false}
-          pauseOnFocusLoss
-          draggable
-          pauseOnHover
-          theme="light"
-          transition={Bounce}
-        />
+        <Suspense fallback={<LoadingPage />}>
+          <ReactQueryProviders>
+            <UserProvider>{children}</UserProvider>
+          </ReactQueryProviders>
+          <ToastContainer
+            position="top-right"
+            autoClose={5000}
+            hideProgressBar={false}
+            newestOnTop={false}
+            closeOnClick={false}
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+            theme="light"
+            transition={Bounce}
+          />
+        </Suspense>
       </body>
     </html>
   );
