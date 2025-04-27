@@ -1,21 +1,11 @@
-import { Geist, Geist_Mono } from "next/font/google";
+import "./globals.css";
 import { Bounce, ToastContainer } from "react-toastify";
 import { ReactQueryProviders } from "@/contexts/react-query";
 import { UserProvider } from "@/contexts/user";
-import type { Metadata } from "next";
-import "./globals.css";
 import { Suspense } from "react";
 import { LoadingPage } from "@/components/loading-page";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+import { ThemeProvider } from "@/contexts/theme";
+import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "AuthVisage",
@@ -28,28 +18,37 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        <Suspense fallback={<LoadingPage />}>
-          <ReactQueryProviders>
-            <UserProvider>{children}</UserProvider>
-          </ReactQueryProviders>
-          <ToastContainer
-            position="top-right"
-            autoClose={5000}
-            hideProgressBar={false}
-            newestOnTop={false}
-            closeOnClick={false}
-            rtl={false}
-            pauseOnFocusLoss
-            draggable
-            pauseOnHover
-            theme="light"
-            transition={Bounce}
-          />
-        </Suspense>
+    <html
+      lang="en"
+      className="dark"
+      style={{ colorScheme: "dark" }}
+    >
+      <body>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="dark"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <Suspense fallback={<LoadingPage />}>
+            <ReactQueryProviders>
+              <UserProvider>{children}</UserProvider>
+            </ReactQueryProviders>
+            <ToastContainer
+              position="top-right"
+              autoClose={5000}
+              hideProgressBar={false}
+              newestOnTop={false}
+              closeOnClick={false}
+              rtl={false}
+              pauseOnFocusLoss
+              draggable
+              pauseOnHover
+              theme="light"
+              transition={Bounce}
+            />
+          </Suspense>
+        </ThemeProvider>
       </body>
     </html>
   );
