@@ -6,7 +6,7 @@ export type User = {
   biometric_captured: boolean;
   subscription: {
     stripe_id: string;
-    status: string;
-    type: string;
+    status: "active" | "inactive";
+    type: "free" | "pay-as-you-go";
   };
 };
