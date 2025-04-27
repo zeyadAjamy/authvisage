@@ -27,8 +27,8 @@ export const authStateObserver = (
           biometric_captured: metadata.biometric_captured,
           subscription: {
             stripe_id: "",
-            status: "",
-            type: "",
+            status: "active",
+            type: "pay-as-you-go",
           },
         });
         return;
