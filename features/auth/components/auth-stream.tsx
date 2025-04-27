@@ -266,7 +266,6 @@ export const AuthStream = ({
                 <SelectItem
                   key={camera.deviceId}
                   value={camera.deviceId}
-                  onClick={() => setSelectedCamera(camera.deviceId)}
                 >
                   {camera.label}
                 </SelectItem>
