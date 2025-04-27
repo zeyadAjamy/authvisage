@@ -29,14 +29,16 @@ export const useCamera = ({ autoOpen }: UseCameraProps): UseCameraReturn => {
 
   const getCameras = useCallback(async () => {
     try {
+      // Getting user media is required to enumerate devices
+      await navigator.mediaDevices.getUserMedia({ audio: false, video: true });
       const devices = await navigator.mediaDevices.enumerateDevices();
       const videoDevices = devices.filter(
         (device) => device.kind === "videoinput",
       );
 
-      const formattedDevices = videoDevices.map((device, index) => ({
+      const formattedDevices = videoDevices.map((device) => ({
         deviceId: device.deviceId,
-        label: device.label || `Camera ${index + 1}`,
+        label: device.label,
       }));
 
       return formattedDevices;
