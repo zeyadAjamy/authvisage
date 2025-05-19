@@ -6,7 +6,7 @@ interface CameraDevice {
   label: string;
 }
 
-interface UseCameraReturn {
+export interface UseCameraReturn {
   cameras: CameraDevice[];
   selectedCamera?: string;
   setSelectedCamera: (deviceId: string) => void;
