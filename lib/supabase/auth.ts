@@ -20,6 +20,7 @@ export const authStateObserver = (
       if (session) {
         const metadata = session.user.user_metadata;
         callback({
+          id: session.user.id,
           name: metadata.fullname,
           email: metadata.email,
           avatar: metadata.avatar_url,
