@@ -20,8 +20,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className="dark"
-      style={{ colorScheme: "dark" }}
+      suppressHydrationWarning
     >
       <body>
         <ThemeProvider
