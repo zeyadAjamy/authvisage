@@ -147,7 +147,10 @@ export const AuthStream = (props: FaceLoginProps) => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const throttledFrameEmitter = useCallback(
     throttle((image: Blob | null, socket: Socket) => {
-      socket.emit(socketEvents.stream, image);
+      socket.emit(socketEvents.stream, {
+        frame: image,
+        orientation: requiredOrientation,
+      });
     }, 1000), // 1 FPS
     [socket],
   );
