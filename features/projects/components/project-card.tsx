@@ -25,6 +25,7 @@ import { toast } from "react-toastify";
 import { format } from "date-fns";
 import { ImageIcon } from "lucide-react";
 import type { Project } from "@/features/projects/types";
+import { Fragment } from "react";
 
 interface ProjectCardProps {
   project: Project;
@@ -55,7 +56,7 @@ export const ProjectCard = ({ project }: ProjectCardProps) => {
   };
 
   return (
-    <>
+    <Fragment>
       <Card className="bg-background f-full flex flex-col overflow-hidden rounded-md shadow-none">
         <Avatar className="h-64 w-full rounded-none">
           <AvatarImage
@@ -63,7 +64,7 @@ export const ProjectCard = ({ project }: ProjectCardProps) => {
             alt={project.name}
             width={128}
             height={128}
-            className="rounded-none"
+            className="rounded-none object-cover object-center"
           />
           <AvatarFallback className="bg-muted rounded-none">
             <ImageIcon className="h-1/2 w-1/2 opacity-5" />
@@ -126,6 +127,6 @@ export const ProjectCard = ({ project }: ProjectCardProps) => {
         </CardFooter>
       </Card>
       <ConfirmDialog />
-    </>
+    </Fragment>
   );
 };
