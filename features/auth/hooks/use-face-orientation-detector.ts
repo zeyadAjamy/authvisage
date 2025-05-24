@@ -205,7 +205,7 @@ export const useFaceOrientationDetector = () => {
           if (chin && forehead) {
             const faceWidth = Math.abs(rightEar.x - leftEar.x);
             const faceHeight = Math.abs(chin.y - forehead.y);
-            isLargeEnough = faceWidth > 0.25 && faceHeight > 0.25;
+            isLargeEnough = faceWidth > 0.2 && faceHeight > 0.2;
           }
         }
 
