@@ -3,7 +3,7 @@
 import { createProject, deleteProject, updateProject } from "../services/api";
 import { useMutation } from "@tanstack/react-query";
 
-export const useProject = () => {
+export const useProjectMutations = () => {
   const createProjectMutation = useMutation({
     mutationFn: createProject,
   });
