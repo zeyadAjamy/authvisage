@@ -7,6 +7,10 @@ export const projectMetadataSchema = z.object({
     .any()
     .optional()
     .refine((file) => {
+      if (typeof file === "string") {
+        // If the file is a string, it might be a URL or path
+        return true;
+      }
       if (file) {
         const isValidFile = file instanceof File;
         return isValidFile;
