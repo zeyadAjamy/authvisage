@@ -60,7 +60,7 @@ export const ProjectCard = ({ project }: ProjectCardProps) => {
       <Card className="bg-background f-full flex flex-col overflow-hidden rounded-md shadow-none">
         <Avatar className="h-64 w-full rounded-none">
           <AvatarImage
-            src={project.logo_url}
+            src={project.logo_url || undefined}
             alt={project.name}
             width={128}
             height={128}
