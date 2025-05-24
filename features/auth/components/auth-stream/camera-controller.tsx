@@ -18,6 +18,7 @@ type CameraControllerProps = Omit<UseCameraReturn, "captureImage"> & {
   onVideoLoadedCallback: (videoElement: HTMLVideoElement) => void;
   onCanvasLoadedCallback: (canvasElement: HTMLCanvasElement) => void;
   label?: string;
+  errorLabel?: string;
 };
 
 export const CameraController = ({
@@ -31,6 +32,7 @@ export const CameraController = ({
   onVideoLoadedCallback,
   onCanvasLoadedCallback,
   label,
+  errorLabel,
 }: CameraControllerProps) => {
   const onBodyLoaded = (e: HTMLDivElement) => {
     const canvas = e.querySelector("canvas");
@@ -49,12 +51,14 @@ export const CameraController = ({
       </div>
     );
   }
+  console.log("errors", errorLabel);
 
   return (
     <div className="flex h-fit w-full flex-col gap-2">
       {label && (
         <p className="text-muted-foreground text-center text-xl">{label}</p>
       )}
+
       <div
         className="relative h-full w-full"
         onLoadedMetadata={(e) => onBodyLoaded(e.currentTarget)}
@@ -88,6 +92,11 @@ export const CameraController = ({
           <p className="text-muted-foreground">Camera is off</p>
         </div>
       </div>
+      {errorLabel && (
+        <p className="text-destructive bg-destructive/10 rounded-md px-2 py-1 text-center font-medium">
+          {`${errorLabel}`}
+        </p>
+      )}
       <div className="flex items-center justify-between gap-2">
         <Select
           value={selectedCamera}
