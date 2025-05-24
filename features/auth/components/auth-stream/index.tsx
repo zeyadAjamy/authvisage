@@ -33,25 +33,26 @@ type AuthConfig = {
  * - OAuth login (includes a consent-capture callback)
  * - Registration
  */
+
 type FaceLoginProps =
   | {
       streamPurpose: "login";
       isOAuth: false;
       onSuccess: (session: Session) => void;
-      onError: (error: string) => void;
+      onError?: (error: string) => void;
     }
   | {
       streamPurpose: "login";
       isOAuth: true;
       onSuccess: (code: string) => void;
-      onError: (error: string) => void;
+      onError?: (error: string) => void;
       captureConsent: (socket: Socket, projectData: Project) => void;
     }
   | {
       streamPurpose: "register";
       isOAuth: false;
       onSuccess: () => void;
-      onError: (error: string) => void;
+      onError?: (error: string) => void;
     };
 
 /**
@@ -85,6 +86,7 @@ const faceActions = {
 export const AuthStream = (props: FaceLoginProps) => {
   const [isAuthStarted, setIsAuthStarted] = useState(false);
   const [cameraLabel, setCameraLabel] = useState<string>();
+  const [errorLabel, setErrorLabel] = useState<string>();
   const [requiredOrientation, setRequiredOrientation] =
     useState<FaceOrientation>("center");
 
@@ -180,10 +182,14 @@ export const AuthStream = (props: FaceLoginProps) => {
       const handleOrientation = (orientation: FaceOrientation) => {
         setRequiredOrientation(orientation);
       };
+      const handleAuthError = (errorObject: { error: string }) => {
+        setErrorLabel(errorObject.error);
+        onError?.(errorObject.error);
+      };
 
       socket.on(socketEvents.started, handleStart);
       socket.on(socketEvents.success, onSuccess);
-      socket.on(socketEvents.error, onError);
+      socket.on(socketEvents.error, handleAuthError);
       socket.on(socketEvents.capture_consent, handleConsent);
       socket.on(socketEvents.set_orientation, handleOrientation);
 
@@ -191,7 +197,7 @@ export const AuthStream = (props: FaceLoginProps) => {
       return () => {
         socket.off(socketEvents.started, handleStart);
         socket.off(socketEvents.success, onSuccess);
-        socket.off(socketEvents.error, onError);
+        socket.off(socketEvents.error, handleAuthError);
         socket.off(socketEvents.capture_consent, handleConsent);
         socket.off(socketEvents.set_orientation, handleOrientation);
       };
@@ -295,6 +301,7 @@ export const AuthStream = (props: FaceLoginProps) => {
       onVideoLoadedCallback={onVideoLoadedCallback}
       onCanvasLoadedCallback={onCanvasLoadedCallback}
       label={cameraLabel}
+      errorLabel={errorLabel}
     />
   );
 };
