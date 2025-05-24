@@ -16,9 +16,6 @@ const CaptureBiometric = () => {
       process.env.NEXT_PUBLIC_AUTHORIZED_REDIRECT_PATH || "/",
     );
   }, []);
-  const errorCallback = useCallback(() => {
-    toast.error("Face registration failed");
-  }, []);
 
   // Array of biometric data handling information
   const biometricInfoList = [
@@ -64,7 +61,6 @@ const CaptureBiometric = () => {
             streamPurpose="register"
             isOAuth={false}
             onSuccess={successCallback}
-            onError={errorCallback}
           />
         </div>
         <div className="bg-card flex flex-col gap-5 rounded-lg p-10">

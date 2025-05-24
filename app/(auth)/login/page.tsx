@@ -4,14 +4,10 @@ import { LoginForm } from "@/features/auth/components/login-form";
 import { AuthStream } from "@/features/auth/components/auth-stream";
 import { client } from "@/lib/supabase/config";
 import { Session } from "@supabase/supabase-js";
-import { toast } from "react-toastify";
 
 const LoginPage = () => {
   const successCallback = async (session: Session) => {
     client.auth.setSession(session);
-  };
-  const errorCallback = () => {
-    toast.error("Authentication failed");
   };
   return (
     <div className="flex min-h-screen flex-col items-center justify-center">
@@ -20,7 +16,6 @@ const LoginPage = () => {
           streamPurpose="login"
           isOAuth={false}
           onSuccess={successCallback}
-          onError={errorCallback}
         />
         <LoginForm />
       </div>

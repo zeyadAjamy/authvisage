@@ -128,7 +128,6 @@ const OAuthPage = () => {
             streamPurpose="login"
             isOAuth={true}
             onSuccess={handleAuthSuccess}
-            onError={handleAuthError}
             captureConsent={handleConsentRequest}
           />
           <LoginForm />
