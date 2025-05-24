@@ -65,7 +65,12 @@ const ConfirmDialog = ({
   const { title, message } = confirmObject;
 
   return (
-    <AlertDialog open={isOpen}>
+    <AlertDialog
+      open={isOpen}
+      onOpenChange={(open) => {
+        if (!open) close(); // This handles ESC key and clicks outside
+      }}
+    >
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>{title}</AlertDialogTitle>
@@ -116,7 +121,9 @@ export const useConfirm = (): UseConfirm => {
   >(null);
 
   const askForConfirmation = useCallback(
-    (confirm: Confirm): Promise<boolean> => {
+    async (confirm: Confirm): Promise<boolean> => {
+      await new Promise((resolve) => setTimeout(resolve, 50));
+
       setConfirm(confirm);
       setIsOpen(true);
 
@@ -128,14 +135,41 @@ export const useConfirm = (): UseConfirm => {
   );
 
   const close = useCallback(() => {
+    // Important: resolve the promise as FALSE when closing without explicit agreement
+    if (resolvePromise) {
+      resolvePromise(false);
+    }
+
+    // First close the dialog visually to improve perceived performance
     setIsOpen(false);
-    setConfirm(null);
-  }, []);
+
+    // Then clean up state with a slight delay to avoid race conditions
+    setTimeout(() => {
+      setConfirm(null);
+      setResolvePromise(null); // Clear the resolver to avoid memory leaks
+    }, 10);
+  }, [resolvePromise]);
 
   const handleAgree = useCallback(() => {
-    if (resolvePromise) resolvePromise(true);
-    close();
-  }, [resolvePromise, close]);
+    // Store locally to avoid race conditions
+    const resolver = resolvePromise;
+
+    // Clean up state first
+    setResolvePromise(null);
+
+    // Resolve as true for agreement
+    if (resolver) {
+      resolver(true);
+    }
+
+    // Close the dialog
+    setIsOpen(false);
+
+    // Clean up remaining state with slight delay
+    setTimeout(() => {
+      setConfirm(null);
+    }, 10);
+  }, [resolvePromise]);
 
   const ConfirmDialogComponent = useMemo(
     () => (
