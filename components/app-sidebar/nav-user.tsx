@@ -29,6 +29,15 @@ export const NavUser = () => {
     return null;
   }
 
+  const constructAvatarFallback = (name?: string | null) => {
+    if (!name) return "U";
+    return name
+      .split(" ")
+      .map((n) => n[0])
+      .join("")
+      .toUpperCase();
+  };
+
   return (
     <SidebarMenu>
       <SidebarMenuItem>
@@ -44,11 +53,7 @@ export const NavUser = () => {
                   alt={user.name}
                 />
                 <AvatarFallback className="rounded-lg">
-                  {user.name
-                    .split(" ")
-                    .map((n) => n[0])
-                    .join("")
-                    .toUpperCase()}
+                  {constructAvatarFallback(user.name)}
                 </AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
@@ -72,11 +77,7 @@ export const NavUser = () => {
                     alt={user.name}
                   />
                   <AvatarFallback className="rounded-lg">
-                    {user.name
-                      .split(" ")
-                      .map((n) => n[0])
-                      .join("")
-                      .toUpperCase()}
+                    {constructAvatarFallback(user.name)}
                   </AvatarFallback>
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">
