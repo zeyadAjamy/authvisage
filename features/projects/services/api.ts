@@ -1,55 +1,70 @@
 import { client } from "@/lib/supabase/config";
 import type {
   NewProject,
-  Project,
   TrustedOrigin,
+  ProjectWithTrustedOrigins,
+  NewTrustedOrigin,
 } from "@/features/projects/types";
 
-export const getProjects = async (): Promise<Project[]> => {
-  const { data, error } = await client.from("project").select<"", Project>();
-  if (error) {
-    throw new Error(error.message);
-  }
-  return data;
-};
-
-export const getProject = async (id: string): Promise<Project> => {
+export const getProjects = async (): Promise<ProjectWithTrustedOrigins[]> => {
   const { data, error } = await client
     .from("project")
-    .select<"", Project>()
-    .eq("id", id)
-    .single();
+    .select<
+      string,
+      ProjectWithTrustedOrigins
+    >("*, trusted_origins:trusted_origin(*)");
   if (error) {
     throw new Error(error.message);
   }
   return data;
 };
 
-export const createProject = async (
-  projectData: NewProject,
-): Promise<Project> => {
-  const { data } = await client
+export const getProject = async (id: string) => {
+  const { data, error } = await client
+    .from("project")
+    .select<
+      string,
+      ProjectWithTrustedOrigins
+    >("*, trusted_origins:trusted_origin(*)")
+    .eq("id", id)
+    .single<ProjectWithTrustedOrigins>();
+
+  if (error) {
+    throw new Error(error.message);
+  }
+  return data;
+};
+
+export const createProject = async (projectData: NewProject) => {
+  const { data, error } = await client
     .from("project")
     .insert(projectData)
-    .select<"", Project>()
+    .select<
+      string,
+      ProjectWithTrustedOrigins
+    >("*, trusted_origins:trusted_origin(*)")
     .single();
-  if (!data) {
-    throw new Error("Failed to create project");
+
+  if (error) {
+    throw error;
   }
   return data;
 };
 
 export const updateProject = async (
   projectData: NewProject & { id: string },
-): Promise<Project> => {
+) => {
   const { data, error } = await client
     .from("project")
     .update(projectData)
     .eq("id", projectData.id)
-    .select<"", Project>()
+    .select<
+      string,
+      ProjectWithTrustedOrigins
+    >("*, trusted_origins:trusted_origin(*)")
     .single();
   if (error) {
-    throw new Error(error.message);
+    throw error;
   }
   return data;
 };
@@ -75,31 +90,30 @@ export const getTrustedOrigins = async (
   return data;
 };
 
-export async function addTrustedOrigin({
-  projectId,
-  name,
-}: {
-  projectId: string;
-  name: string;
-}): Promise<TrustedOrigin> {
+export const addTrustedOrigins = async (
+  origins: NewTrustedOrigin[],
+): Promise<TrustedOrigin[]> => {
   const { data, error } = await client
     .from("trusted_origin")
-    .insert({ project_id: projectId, name })
-    .select<"", TrustedOrigin>()
-    .single();
+    .insert(origins)
+    .select<string, TrustedOrigin>();
+
   if (error) {
     throw new Error(error.message);
   }
-  return data;
-}
 
-export async function deleteTrustedOrigin(domainId: string): Promise<boolean> {
+  return data;
+};
+
+export const deleteTrustedOrigins = async (
+  originIds: string[],
+): Promise<boolean> => {
   const { error } = await client
     .from("trusted_origin")
     .delete()
-    .eq("id", domainId);
+    .in("id", originIds);
   if (error) {
     throw new Error(error.message);
   }
   return true;
-}
+};
