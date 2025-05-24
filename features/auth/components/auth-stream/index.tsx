@@ -146,12 +146,15 @@ export const AuthStream = (props: FaceLoginProps) => {
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const throttledFrameEmitter = useCallback(
-    throttle((image: Blob | null, socket: Socket) => {
-      socket.emit(socketEvents.stream, {
-        frame: image,
-        orientation: requiredOrientation,
-      });
-    }, 1000), // 1 FPS
+    throttle(
+      (frame: Blob | null, socket: Socket, orientation: FaceOrientation) => {
+        socket.emit(socketEvents.stream, {
+          frame,
+          orientation,
+        });
+      },
+      1000,
+    ), // 1 FPS
     [socket],
   );
   /**
@@ -221,7 +224,7 @@ export const AuthStream = (props: FaceLoginProps) => {
         return;
       }
       const { faceCount, orientation, isLargeEnough } = liveDetectionResults;
-      console.log(`Face Orientation: ${orientation}`);
+      console.log(liveDetectionResults);
       if (faceCount <= 0 || !orientation) {
         setCameraLabel(faceActions.face_not_found);
         return;
@@ -236,7 +239,9 @@ export const AuthStream = (props: FaceLoginProps) => {
       }
 
       setCameraLabel(faceActions.perfect);
-      captureImage().then((data) => throttledFrameEmitter(data, socket));
+      captureImage().then((data) =>
+        throttledFrameEmitter(data, socket, orientation),
+      );
     }, 1000 / 10); // 20 FPS
 
     // Cleanup interval on unmount
