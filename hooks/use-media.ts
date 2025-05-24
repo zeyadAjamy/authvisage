@@ -11,12 +11,13 @@ import { useMutation } from "@tanstack/react-query";
 
 export const useMedia = (bucketName: StorageBucket) => {
   const { user } = useUserContext();
-  const uploadMutation = useMutation({
+
+  const uploadMediaMutation = useMutation({
     mutationFn: async (file: File) =>
       await uploadFile(bucketName, `${user?.id}/${file.name}`, file),
   });
 
-  const deleteMutation = useMutation({
+  const deleteMediaMutation = useMutation({
     mutationFn: async (path: string) => await deleteFile(bucketName, path),
   });
 
@@ -25,8 +26,8 @@ export const useMedia = (bucketName: StorageBucket) => {
   });
 
   return {
-    upload: uploadMutation,
-    delete: deleteMutation,
-    getPublicUrl: getPublicUrlMutation,
+    uploadMediaMutation,
+    deleteMediaMutation,
+    getPublicUrlMutation,
   };
 };
