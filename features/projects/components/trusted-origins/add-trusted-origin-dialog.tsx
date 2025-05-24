@@ -12,103 +12,53 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { validateOriginsUrl } from "@/features/projects/utils/validate-origins";
-import { useTrustedOrigins } from "@/features/projects/hooks/use-trusted-origins";
-import { TrustedOrigin } from "../../types";
+import { urlScheme } from "@/features/projects/schemes/url-scheme";
 
 type AddTrustedOriginDialogProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onSave: (domains: TrustedOrigin[]) => void;
-  projectId?: string;
-  isControlledMode: boolean;
+  onSave: (origins: string[]) => void;
 };
 
 export const AddTrustedOriginDialog = ({
   open,
   onOpenChange,
   onSave,
-  projectId,
-  isControlledMode,
 }: AddTrustedOriginDialogProps) => {
   const [newUrl, setNewUrl] = useState("");
-  const [tempDomains, setTempDomains] = useState<{ url: string }[]>([]);
-
-  // Add domain mutation
-  const { addTrustedOriginMutation } = useTrustedOrigins();
+  const [tempOrigins, setTempOrigins] = useState<string[]>([]);
 
   // Handle adding a temp domain
   const handleAddTempDomain = () => {
     if (!newUrl.trim()) return;
-    if (tempDomains.some((domain) => domain.url === newUrl)) {
+    if (tempOrigins.includes(newUrl)) {
       toast.error("This URL is already in the list.");
       return;
     }
-    const isValidUrl = validateOriginsUrl(newUrl);
-    if (!isValidUrl) {
+    // Validate the URL format
+    const isValidUrl = urlScheme.safeParse({ url: newUrl });
+    if (!isValidUrl.success) {
       toast.error("Invalid URL format. Please enter a valid URL.");
       return;
     }
-    setTempDomains([...tempDomains, { url: newUrl }]);
+
+    setTempOrigins([...tempOrigins, newUrl]);
     setNewUrl("");
   };
 
   // Handle removing a temp domain
   const handleRemoveTempDomain = (index: number) => {
-    setTempDomains(tempDomains.filter((_, i) => i !== index));
+    setTempOrigins(tempOrigins.filter((_, i) => i !== index));
   };
 
   // Handle saving all temp domains
-  const handleSaveDomains = async () => {
-    if (tempDomains.length === 0) {
+  const handleSaveOrigins = async () => {
+    if (tempOrigins.length === 0) {
       onOpenChange(false);
       return;
     }
-
-    const trustedOriginUrls = tempDomains.map((domain) => domain.url);
-
-    if (!isControlledMode && projectId) {
-      // In uncontrolled mode with projectId, use the API
-      const newTrustedOrigins = trustedOriginUrls.map(
-        async (url) =>
-          await addTrustedOriginMutation.mutateAsync(
-            {
-              projectId,
-              name: url,
-            },
-            {
-              onError: () => {
-                toast.error(`Failed to add the following origin URL: ${url}`);
-              },
-            },
-          ),
-      );
-
-      const results = await Promise.allSettled(newTrustedOrigins);
-      const successfulUrls = results.filter(
-        (result) => result.status === "fulfilled",
-      );
-      const failedUrls = results.filter(
-        (result) => result.status === "rejected",
-      );
-
-      if (failedUrls.length > 0) {
-        toast.error(
-          `Failed to add the following origin URLs: ${failedUrls
-            .map((result) => result.reason)
-            .join(", ")}`,
-        );
-      }
-
-      if (successfulUrls.length > 0) {
-        onSave(successfulUrls.map((result) => result.value));
-      }
-      return;
-    }
-
-    // Pass the new domains to the parent component
-    onSave(trustedOriginUrls.map((url) => ({ id: `local_${url}`, name: url })));
-    setTempDomains([]);
+    onSave(tempOrigins);
+    setTempOrigins([]);
   };
 
   return (
@@ -157,15 +107,15 @@ export const AddTrustedOriginDialog = ({
             </div>
           </div>
 
-          {tempDomains.length > 0 && (
+          {tempOrigins.length > 0 && (
             <div className="space-y-2 rounded-md border p-2">
-              {tempDomains.map((domain, index) => (
+              {tempOrigins.map((origin, index) => (
                 <div
                   key={index}
                   className="bg-muted/50 flex items-center justify-between rounded-md p-2"
                 >
                   <span className="flex-1 truncate font-mono text-sm">
-                    {domain.url}
+                    {origin}
                   </span>
                   <Button
                     variant="ghost"
@@ -183,7 +133,7 @@ export const AddTrustedOriginDialog = ({
         </div>
         <div className="flex justify-end">
           <Button
-            onClick={handleSaveDomains}
+            onClick={handleSaveOrigins}
             className="w-full"
           >
             Save URLs
