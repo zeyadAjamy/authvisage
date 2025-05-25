@@ -1,7 +1,7 @@
 "use client";
 
+import Link from "next/link";
 import { ChevronsUpDown, LogOut, Settings, Sparkles } from "lucide-react";
-
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
@@ -100,10 +100,15 @@ export const NavUser = () => {
 
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem>
-                <Settings />
-                Profile Settings
-              </DropdownMenuItem>
+              <Link
+                href="/profile-settings"
+                passHref
+              >
+                <DropdownMenuItem>
+                  <Settings />
+                  Profile Settings
+                </DropdownMenuItem>
+              </Link>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={signOut}>

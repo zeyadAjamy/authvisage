@@ -39,7 +39,7 @@ const navMenu = [
   },
   {
     title: "Profile Settings",
-    url: "/profile",
+    url: "/profile-settings",
     icon: SettingsIcon,
     items: [],
   },
