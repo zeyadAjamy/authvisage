@@ -48,7 +48,7 @@ const CaptureBiometric = () => {
 
   return (
     <div className="flex flex-col items-center justify-center gap-5">
-      <div className="bg-card flex w-full flex-col overflow-hidden rounded-md p-18 px-6 pb-16">
+      <div className="bg-card flex w-full flex-col overflow-hidden rounded-md p-10">
         <h1 className="text-2xl font-bold md:text-3xl">Capture Biometric</h1>
         <p className="text-muted-foreground text-lg">
           You are one step away from creating your account. Please look at the
