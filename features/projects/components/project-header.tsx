@@ -15,7 +15,7 @@ export const ProjectHeader = () => {
   };
 
   return (
-    <div className="bg-card flex flex-col items-start gap-4 rounded-lg border p-18 px-6 pb-16 md:flex-row md:items-end">
+    <div className="bg-card flex flex-col items-start gap-4 rounded-lg border p-10 px-6 md:flex-row md:items-end">
       <div className="flex w-full flex-col overflow-hidden rounded-md">
         <h1 className="text-2xl font-bold md:text-3xl">Your Projects</h1>
         <p className="text-muted-foreground max-w-xl text-lg">
