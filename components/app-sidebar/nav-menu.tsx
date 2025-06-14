@@ -24,7 +24,8 @@ export interface Item {
   url: string;
   icon?: LucideIcon;
   isActive?: boolean;
-  items?: Array<Item>;
+  items?: Array<Pick<Item, "title" | "url">>;
+  expanded?: boolean;
 }
 
 interface NavMenuProps {

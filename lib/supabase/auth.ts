@@ -20,6 +20,7 @@ export const authStateObserver = (
       if (session) {
         const metadata = session.user.user_metadata;
         callback({
+          id: session.user.id,
           name: metadata.fullname,
           email: metadata.email,
           avatar: metadata.avatar_url,
@@ -27,8 +28,8 @@ export const authStateObserver = (
           biometric_captured: metadata.biometric_captured,
           subscription: {
             stripe_id: "",
-            status: "",
-            type: "",
+            status: "active",
+            type: "pay-as-you-go",
           },
         });
         return;

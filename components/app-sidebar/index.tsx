@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/sidebar";
 import { NavMenu } from "./nav-menu";
 import { NavUser } from "./nav-user";
-import { SettingsIcon, LockIcon } from "lucide-react";
+import { SettingsIcon, LockIcon, ScanFaceIcon } from "lucide-react";
 
 const navMenu = [
   {
@@ -20,6 +20,22 @@ const navMenu = [
     isActive: true,
     icon: LockIcon,
     items: [],
+  },
+  {
+    title: "Projects",
+    url: "/projects",
+    icon: ScanFaceIcon,
+    isActive: true,
+    items: [
+      {
+        title: "Create New Project",
+        url: "/projects/new",
+      },
+      {
+        title: "Manage Projects",
+        url: "/projects",
+      },
+    ],
   },
   {
     title: "Profile Settings",

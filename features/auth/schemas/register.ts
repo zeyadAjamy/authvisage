@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const schema = z
+export const registrationSchema = z
   .object({
     fullname: z.string().min(3, { message: "Name is too short" }),
     email: z.string().email({
@@ -27,6 +27,7 @@ export const schema = z
   })
   .refine((data) => data.password === data.confirm_password, {
     message: "Passwords do not match",
+    path: ["confirm_password"],
   });
 
-export type RegistrationFormSchema = z.infer<typeof schema>;
+export type RegistrationFormSchema = z.infer<typeof registrationSchema>;
