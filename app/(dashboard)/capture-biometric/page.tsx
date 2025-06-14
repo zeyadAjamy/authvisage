@@ -59,7 +59,6 @@ const CaptureBiometric = () => {
         <div className="bg-card rounded-lg p-10">
           <AuthStream
             streamPurpose="register"
-            isOAuth={false}
             onSuccess={successCallback}
           />
         </div>
