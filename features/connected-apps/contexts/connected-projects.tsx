@@ -36,7 +36,7 @@ export const ConnectedAppsProvider = ({
 
   const disconnectAppCallback = useCallback(
     (appId: string) => {
-      setFilteredApps((prev) => prev.filter((app) => app.id !== appId));
+      setFilteredApps((prev) => prev.filter((app) => app.project.id !== appId));
     },
     [setFilteredApps],
   );
