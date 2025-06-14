@@ -12,18 +12,18 @@ import {
   FaceOrientation,
   useFaceOrientationDetector,
 } from "@/features/auth/hooks/use-face-orientation-detector";
-import type { Project } from "@/features/projects/types";
+import type { Project } from "@/types/project";
 
 /**
  * Represents the payload needed for authentication.
  * When using OAuth, it includes parameters from the URL query.
  */
 type AuthConfig = {
-  auth_type: "login" | "register";
+  auth_type: "login" | "register" | "oauth";
   code_challenge: string | null;
   project_id: string | null;
   redirect_uri: string | null;
-  session_id: string | null;
+  oauth_session_id: string | null;
   state: string | null;
 };
 
@@ -37,20 +37,17 @@ type AuthConfig = {
 type FaceLoginProps =
   | {
       streamPurpose: "login";
-      isOAuth: false;
       onSuccess: (session: Session) => void;
       onError?: (error: string) => void;
     }
   | {
-      streamPurpose: "login";
-      isOAuth: true;
-      onSuccess: (code: string) => void;
+      streamPurpose: "oauth";
+      onSuccess: ({ auth_code }: { auth_code: string }) => void;
       onError?: (error: string) => void;
       captureConsent: (socket: Socket, projectData: Project) => void;
     }
   | {
       streamPurpose: "register";
-      isOAuth: false;
       onSuccess: () => void;
       onError?: (error: string) => void;
     };
@@ -112,7 +109,8 @@ export const AuthStream = (props: FaceLoginProps) => {
   // Retrieve URL query parameters (used in OAuth)
   const searchParams = useSearchParams();
 
-  const { streamPurpose, isOAuth, onSuccess, onError } = props;
+  const { streamPurpose, onSuccess, onError } = props;
+  const isOAuth = streamPurpose === "oauth";
 
   /**
    * Constructs the authentication config to send via socket.
@@ -124,7 +122,7 @@ export const AuthStream = (props: FaceLoginProps) => {
       code_challenge: null,
       project_id: null,
       redirect_uri: null,
-      session_id: null,
+      oauth_session_id: null,
       state: null,
     } as AuthConfig;
 
@@ -132,8 +130,9 @@ export const AuthStream = (props: FaceLoginProps) => {
       const keys = [
         "project_id",
         "redirect_uri",
-        "session_id",
+        "oauth_session_id",
         "state",
+        "code_challenge",
       ] as const;
 
       // Populate authObject with values from URL
@@ -174,9 +173,10 @@ export const AuthStream = (props: FaceLoginProps) => {
       socket.emit(socketEvents.start, authConfig);
 
       const handleStart = () => setIsAuthStarted(true);
-      const handleConsent = (data: Project) => {
-        if (streamPurpose === "login" && isOAuth && "captureConsent" in props) {
-          props.captureConsent(socket, data);
+      const handleConsent = (data: { project: string }) => {
+        if (streamPurpose === "oauth" && isOAuth && "captureConsent" in props) {
+          const project = JSON.parse(data.project) as Project;
+          props.captureConsent(socket, project);
         }
       };
       const handleOrientation = (orientation: FaceOrientation) => {
@@ -230,7 +230,7 @@ export const AuthStream = (props: FaceLoginProps) => {
         return;
       }
       const { faceCount, orientation, isLargeEnough } = liveDetectionResults;
-      console.log(liveDetectionResults);
+      // console.log(liveDetectionResults);
       if (faceCount <= 0 || !orientation) {
         setCameraLabel(faceActions.face_not_found);
         return;
