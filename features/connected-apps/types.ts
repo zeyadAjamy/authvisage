@@ -1,7 +1,9 @@
+import { Project } from "@/types/project";
+
 export interface ConnectedApp {
-  id: string;
-  name: string;
-  image: string;
-  connectedAt: Date;
-  lastSignIn: Date | null;
+  project_id: string;
+  owner_id: string;
+  project: Project;
+  created_at: string;
+  last_sign_in: string | null;
 }
