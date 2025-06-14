@@ -15,7 +15,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import type { Project } from "@/features/projects/types";
+import type { Project } from "@/types/project";
 
 export interface ProjectFormValues {
   name: string;
