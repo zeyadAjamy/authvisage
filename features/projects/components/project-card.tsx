@@ -24,8 +24,8 @@ import { deleteProject } from "@/features/projects/services/api";
 import { toast } from "react-toastify";
 import { format } from "date-fns";
 import { ImageIcon } from "lucide-react";
-import type { Project } from "@/features/projects/types";
 import { Fragment } from "react";
+import type { Project } from "@/types/project";
 
 interface ProjectCardProps {
   project: Project;
