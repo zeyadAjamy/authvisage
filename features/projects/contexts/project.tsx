@@ -12,7 +12,7 @@ import { useQuery } from "@tanstack/react-query";
 import { getProjects } from "../services/api";
 import { toast } from "react-toastify";
 import { useQueryClient } from "@/contexts/react-query";
-import { Project } from "../types";
+import { Project } from "@/types/project";
 
 interface ProjectContextType {
   projects: Project[];
