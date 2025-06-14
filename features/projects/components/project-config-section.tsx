@@ -12,7 +12,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { toast } from "react-toastify";
-import type { Project } from "@/features/projects/types";
+import type { Project } from "@/types/project";
 
 interface ProjectConfigSectionProps {
   project: Project;
