@@ -51,7 +51,7 @@ export const ConnectedAppsTable = () => {
               )
               .map((app) => (
                 <ConnectedAppRow
-                  key={app.id}
+                  key={`connected-app-${app.project_id}-owner-${app.owner_id}`}
                   {...app}
                 />
               ))

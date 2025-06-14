@@ -15,7 +15,7 @@ export const ConnectedAppsFilters = () => {
 
     const searchTerm = event.target.value.toLowerCase();
     const filtered = connectedApps.filter((app) =>
-      app.name.toLowerCase().includes(searchTerm),
+      app.project.name.toLowerCase().includes(searchTerm),
     );
     setFilteredApps(filtered);
   };
