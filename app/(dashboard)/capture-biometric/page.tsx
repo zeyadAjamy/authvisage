@@ -8,13 +8,18 @@ import { CheckCircle } from "lucide-react";
 
 const CaptureBiometric = () => {
   const successCallback = useCallback(async () => {
-    toast.success("Face registered successfully");
-    await updateUserMetadata({
-      biometric_captured: true,
-    });
-    window.location.assign(
-      process.env.NEXT_PUBLIC_AUTHORIZED_REDIRECT_PATH || "/",
-    );
+    try {
+      await updateUserMetadata({
+        biometric_captured: true,
+      });
+      toast.success("Face registered successfully");
+      window.location.assign(
+        process.env.NEXT_PUBLIC_AUTHORIZED_REDIRECT_PATH || "/",
+      );
+    } catch (error) {
+      toast.error("Failed to register face. Please try again.");
+      console.error("Error updating user metadata:", error);
+    }
   }, []);
 
   // Array of biometric data handling information
