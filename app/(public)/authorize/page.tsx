@@ -5,9 +5,10 @@ import { useSearchParams } from "next/navigation";
 import { toast } from "react-toastify";
 import { LoginForm } from "@/features/auth/components/login-form";
 import { AuthStream } from "@/features/auth/components/auth-stream";
-import { Button } from "@/components/ui/button";
+import { CaptureConsent } from "@/features/auth/components/auth-stream/capture-consent";
+import { cn } from "@/utils/shadcn";
 import type { Socket } from "socket.io-client";
-import type { Project } from "@/features/projects/types";
+import type { Project } from "@/types/project";
 
 const OAuthPage = () => {
   const [socket, setSocket] = useState<Socket>();
@@ -37,8 +38,8 @@ const OAuthPage = () => {
    * Constructs the final redirect URL and navigates to it.
    */
   const handleAuthSuccess = useCallback(
-    async (code: string) => {
-      const url = constructRedirectUri(code);
+    async ({ auth_code }: { auth_code: string }) => {
+      const url = constructRedirectUri(auth_code);
       if (!url) {
         toast.error("Invalid redirect URL");
         return;
@@ -97,42 +98,36 @@ const OAuthPage = () => {
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-center">
-      {projectData && socket ? (
-        <div className="grid grid-cols-1 items-center gap-10 p-10 md:grid-cols-2 md:p-0">
-          <div>
-            <h1 className="text-3xl font-bold">{projectData.name}</h1>
-            <p className="text-gray-600">
-              {projectData.description ||
-                "This application requires your consent to access your data."}
-            </p>
-          </div>
-          <div className="flex flex-col gap-2 self-end">
-            <Button
-              className="mt-4"
-              onClick={sendConsentConfirmation}
-            >
-              Give Consent
-            </Button>
-            <Button
-              variant="secondary"
-              className="mt-4"
-              onClick={handleCancel}
-            >
-              Cancel
-            </Button>
-          </div>
-        </div>
-      ) : (
-        <div className="grid grid-cols-1 items-center gap-10 p-10 md:grid-cols-2 md:p-0">
-          <AuthStream
-            streamPurpose="login"
-            isOAuth={true}
-            onSuccess={handleAuthSuccess}
-            captureConsent={handleConsentRequest}
+      {projectData && socket && (
+        <div className="col-span-2">
+          <CaptureConsent
+            project={projectData}
+            onCaptureConsent={(approved: boolean) => {
+              if (approved) {
+                sendConsentConfirmation();
+              } else {
+                handleCancel();
+              }
+            }}
           />
-          <LoginForm />
         </div>
       )}
+
+      <div
+        className={cn(
+          "grid grid-cols-1 items-center gap-10 p-10 md:grid-cols-2 md:p-0",
+          {
+            "pointer-events-none opacity-0": projectData && socket,
+          },
+        )}
+      >
+        <AuthStream
+          streamPurpose="oauth"
+          onSuccess={handleAuthSuccess}
+          captureConsent={handleConsentRequest}
+        />
+        <LoginForm />
+      </div>
     </div>
   );
 };
