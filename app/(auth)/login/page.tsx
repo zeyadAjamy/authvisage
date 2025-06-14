@@ -14,7 +14,6 @@ const LoginPage = () => {
       <div className="grid grid-cols-1 items-center gap-10 p-10 md:grid-cols-2 md:p-0">
         <AuthStream
           streamPurpose="login"
-          isOAuth={false}
           onSuccess={successCallback}
         />
         <LoginForm />
